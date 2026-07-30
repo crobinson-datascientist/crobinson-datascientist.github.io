@@ -100,6 +100,11 @@ h3 {
   font-family: 'DM Serif Display', Georgia, serif;
   font-size: 2.8rem; color: #fff; flex-shrink: 0;
   box-shadow: 0 8px 32px rgba(29,158,117,0.25);
+  overflow: hidden; padding: 0;
+}
+.avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
 }
 
 /* ---------- Badges & chips ---------- */
@@ -290,15 +295,4 @@ footer a:hover { text-decoration: underline; }
   .nav-links li { padding: 0.6rem 0; }
   .nav-toggle { display: block; }
   .btn-row .btn { flex: 1; justify-content: center; }
-}
-
-.avatar {
-  overflow: hidden;
-  padding: 0;
-}
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
