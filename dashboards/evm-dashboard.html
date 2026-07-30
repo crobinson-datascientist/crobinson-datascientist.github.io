@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construction PMO Dashboard — Tableau Style</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f0f0; font-size: 12px; }
+
+.toolbar {
+  background: #2d2d2d; color: #ccc; padding: 6px 14px;
+  display: flex; align-items: center; gap: 16px; font-size: 11px;
+}
+.toolbar .logo { color: #e8742a; font-weight: 700; font-size: 15px; letter-spacing: 1px; }
+.toolbar .active { color: #fff; }
+
+.tab-bar { background: #3a3a3a; display: flex; padding: 0 12px; gap: 2px; }
+.tab { padding: 7px 18px; font-size: 11px; color: #bbb; cursor: pointer; border-top: 2px solid transparent; }
+.tab.active { background: #f0f0f0; color: #2d2d2d; border-top-color: #e8742a; }
+
+.dashboard { padding: 10px; display: grid; gap: 8px; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.kpi-card {
+  background: white; border-radius: 4px; padding: 10px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12); border-left: 4px solid #ccc;
+}
+.kpi-card.green { border-left-color: #59a14f; }
+.kpi-card.yellow { border-left-color: #f28e2b; }
+.kpi-card.red { border-left-color: #e15759; }
+.kpi-card.blue { border-left-color: #4e79a7; }
+.kpi-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.kpi-value { font-size: 20px; font-weight: 700; color: #2d2d2d; }
+.kpi-sub { font-size: 9px; color: #aaa; margin-top: 3px; }
+
+.main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.card {
+  background: white; border-radius: 4px; padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.card-title {
+  font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 8px; padding-bottom: 5px;
+  border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;
+}
+.pill { font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.pill.green { background: #dff0d8; color: #3c763d; }
+.pill.yellow { background: #fcf8e3; color: #8a6d3b; }
+.pill.red { background: #f2dede; color: #a94442; }
+
+.legend { display: flex; gap: 12px; font-size: 9px; color: #666; margin-top: 6px; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-box { width: 10px; height: 10px; border-radius: 2px; }
+
+/* GANTT */
+.gantt-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.gantt-table th { background: #f5f5f5; color: #666; font-weight: 600; padding: 4px 6px; text-align: left; font-size: 9px; border-bottom: 1px solid #ddd; }
+.gantt-table td { padding: 5px 6px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
+.dot-green { background: #59a14f; } .dot-yellow { background: #f28e2b; } .dot-red { background: #e15759; }
+.gantt-bar-wrap { position: relative; height: 12px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
+.gantt-bar { height: 100%; border-radius: 2px; position: absolute; top: 0; }
+.gantt-progress { background: #4e79a7; }
+
+/* BUDGET */
+.budget-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.budget-label { width: 95px; font-size: 9px; color: #555; text-align: right; flex-shrink: 0; }
+.budget-bars { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.bar-wrap { display: flex; align-items: center; gap: 4px; }
+.bar { height: 11px; border-radius: 2px; }
+.bar-baseline { background: #4e79a7; }
+.bar-current { background: #e15759; }
+.bar-val { font-size: 8px; color: #777; white-space: nowrap; }
+
+/* NOTES */
+.notes-list { display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto; }
+.note-item { border-left: 3px solid #ccc; padding: 5px 8px; border-radius: 0 3px 3px 0; background: #fafafa; font-size: 10px; line-height: 1.4; }
+.note-item.green { border-left-color: #59a14f; background: #f6fff4; }
+.note-item.yellow { border-left-color: #f28e2b; background: #fffdf4; }
+.note-item.red { border-left-color: #e15759; background: #fff6f6; }
+.note-date { font-size: 9px; color: #aaa; margin-bottom: 2px; }
+.note-text { color: #555; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="logo">tableau</span>
+  <span style="color:#aaa">|</span>
+  <span class="active">Construction PMO Dashboard</span>
+  <span style="color:#666">Last refreshed: Jul 27, 2026 &nbsp;8:14 AM</span>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active">📊 Executive Overview</div>
+  <div class="tab">📅 Schedule Detail</div>
+  <div class="tab">💰 Budget Variance</div>
+  <div class="tab">📋 Notes Log</div>
+</div>
+
+<div class="dashboard">
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Budget (Baseline)</div>
+      <div class="kpi-value">$48.2M</div>
+      <div class="kpi-sub">Across 6 active projects</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Current Forecast</div>
+      <div class="kpi-value">$51.7M</div>
+      <div class="kpi-sub">+$3.5M variance</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Schedule Perf. (SPI)</div>
+      <div class="kpi-value">0.91</div>
+      <div class="kpi-sub">Behind schedule</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Cost Perf. (CPI)</div>
+      <div class="kpi-value">0.93</div>
+      <div class="kpi-sub">Slightly over budget</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Projects On Track</div>
+      <div class="kpi-value">3 / 6</div>
+      <div class="kpi-sub">2 yellow &nbsp;·&nbsp; 1 red</div>
+    </div>
+  </div>
+
+  <!-- MAIN 2-COL GRID -->
+  <div class="main-grid">
+
+    <!-- EVM CHART -->
+    <div class="card">
+      <div class="card-title">Earned Value Management (EVM) — Cumulative</div>
+      <svg width="100%" height="175" viewBox="0 0 480 175">
+        <line x1="50" y1="10" x2="50" y2="145" stroke="#eee" stroke-width="1"/>
+        <line x1="50" y1="145" x2="470" y2="145" stroke="#eee" stroke-width="1"/>
+        <line x1="50" y1="115" x2="470" y2="115" stroke="#f0f0f0" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="50" y1="85"  x2="470" y2="85"  stroke="#f0f0f0" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="50" y1="55"  x2="470" y2="55"  stroke="#f0f0f0" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="50" y1="25"  x2="470" y2="25"  stroke="#f0f0f0" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="44" y="148" fill="#aaa" font-size="8" text-anchor="end">$0</text>
+        <text x="44" y="118" fill="#aaa" font-size="8" text-anchor="end">$10M</text>
+        <text x="44" y="88"  fill="#aaa" font-size="8" text-anchor="end">$20M</text>
+        <text x="44" y="58"  fill="#aaa" font-size="8" text-anchor="end">$30M</text>
+        <text x="44" y="28"  fill="#aaa" font-size="8" text-anchor="end">$40M</text>
+        <text x="80"  y="158" fill="#aaa" font-size="8" text-anchor="middle">Jan</text>
+        <text x="140" y="158" fill="#aaa" font-size="8" text-anchor="middle">Feb</text>
+        <text x="200" y="158" fill="#aaa" font-size="8" text-anchor="middle">Mar</text>
+        <text x="260" y="158" fill="#aaa" font-size="8" text-anchor="middle">Apr</text>
+        <text x="320" y="158" fill="#aaa" font-size="8" text-anchor="middle">May</text>
+        <text x="380" y="158" fill="#aaa" font-size="8" text-anchor="middle">Jun</text>
+        <text x="440" y="158" fill="#aaa" font-size="8" text-anchor="middle">Jul</text>
+        <!-- BCWS planned dashed blue -->
+        <polyline points="80,138 140,125 200,108 260,90 320,70 380,50 440,32"
+          fill="none" stroke="#4e79a7" stroke-width="2" stroke-dasharray="5,3"/>
+        <!-- BCWP earned green -->
+        <polyline points="80,140 140,129 200,116 260,101 320,85 380,70 440,58"
+          fill="none" stroke="#59a14f" stroke-width="2.5"/>
+        <!-- ACWP actual red -->
+        <polyline points="80,139 140,127 200,112 260,96 320,78 380,62 440,48"
+          fill="none" stroke="#e15759" stroke-width="2.5"/>
+        <line x1="440" y1="12" x2="440" y2="145" stroke="#f28e2b" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <text x="445" y="24" fill="#f28e2b" font-size="8">Today</text>
+        <circle cx="440" cy="58" r="4" fill="#59a14f"/>
+        <circle cx="440" cy="48" r="4" fill="#e15759"/>
+        <circle cx="440" cy="32" r="4" fill="#4e79a7"/>
+      </svg>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#4e79a7"></div>BCWS (Planned Value)</div>
+        <div class="legend-item"><div class="legend-box" style="background:#59a14f"></div>BCWP (Earned Value)</div>
+        <div class="legend-item"><div class="legend-box" style="background:#e15759"></div>ACWP (Actual Cost)</div>
+      </div>
+    </div>
+
+    <!-- GANTT -->
+    <div class="card">
+      <div class="card-title">Gantt Schedule — Project Status</div>
+      <table class="gantt-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Status</th>
+            <th style="width:110px">Progress</th>
+            <th>Target End</th>
+            <th>% Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Terminal A Renovation</strong></td>
+            <td><span class="status-dot dot-green"></span>On Track</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:72%"></div></div></td>
+            <td>Sep 2026</td><td>72%</td>
+          </tr>
+          <tr>
+            <td><strong>Hangar 7 Expansion</strong></td>
+            <td><span class="status-dot dot-yellow"></span>At Risk</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:45%;background:#f28e2b"></div></div></td>
+            <td>Dec 2026</td><td>45%</td>
+          </tr>
+          <tr>
+            <td><strong>Apron Resurfacing</strong></td>
+            <td><span class="status-dot dot-green"></span>On Track</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:88%"></div></div></td>
+            <td>Aug 2026</td><td>88%</td>
+          </tr>
+          <tr>
+            <td><strong>Control Tower Fit-Out</strong></td>
+            <td><span class="status-dot dot-red"></span>Behind</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:30%;background:#e15759"></div></div></td>
+            <td>Oct 2026</td><td>30%</td>
+          </tr>
+          <tr>
+            <td><strong>Taxiway Delta Extension</strong></td>
+            <td><span class="status-dot dot-green"></span>On Track</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:61%"></div></div></td>
+            <td>Nov 2026</td><td>61%</td>
+          </tr>
+          <tr>
+            <td><strong>Cargo Facility Phase 2</strong></td>
+            <td><span class="status-dot dot-yellow"></span>At Risk</td>
+            <td><div class="gantt-bar-wrap"><div class="gantt-bar gantt-progress" style="width:38%;background:#f28e2b"></div></div></td>
+            <td>Feb 2027</td><td>38%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- BUDGET VARIANCE -->
+    <div class="card">
+      <div class="card-title">Baseline vs Current Budget <span class="pill red">+$3.5M Over</span></div>
+      <div style="padding:4px 0">
+        <div class="budget-row">
+          <div class="budget-label">Terminal A Reno</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:130px"></div><span class="bar-val">$12.0M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:136px"></div><span class="bar-val">$12.6M current</span></div>
+          </div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-label">Hangar 7 Exp.</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:98px"></div><span class="bar-val">$9.1M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:118px"></div><span class="bar-val">$10.9M current</span></div>
+          </div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-label">Apron Resurface</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:54px"></div><span class="bar-val">$5.0M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:56px"></div><span class="bar-val">$5.2M current</span></div>
+          </div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-label">Control Tower</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:78px"></div><span class="bar-val">$7.2M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:89px"></div><span class="bar-val">$8.2M current</span></div>
+          </div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-label">Taxiway Delta</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:65px"></div><span class="bar-val">$6.0M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:67px"></div><span class="bar-val">$6.2M current</span></div>
+          </div>
+        </div>
+        <div class="budget-row">
+          <div class="budget-label">Cargo Facility</div>
+          <div class="budget-bars">
+            <div class="bar-wrap"><div class="bar bar-baseline" style="width:90px"></div><span class="bar-val">$8.9M baseline</span></div>
+            <div class="bar-wrap"><div class="bar bar-current" style="width:86px"></div><span class="bar-val">$8.6M current</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#4e79a7"></div>Baseline Budget</div>
+        <div class="legend-item"><div class="legend-box" style="background:#e15759"></div>Current Forecast</div>
+      </div>
+    </div>
+
+    <!-- NOTES LOG -->
+    <div class="card">
+      <div class="card-title">Project Notes Log <span style="font-size:9px;color:#aaa;font-weight:400">Border color = status at time of note</span></div>
+      <div class="notes-list">
+        <div class="note-item red">
+          <div class="note-date">Jul 24, 2026 &nbsp;·&nbsp; Control Tower Fit-Out</div>
+          <div class="note-text">Steel delivery delayed by supplier; subcontractor rescheduled to Aug 3. Recovery plan submitted. SPI now 0.74 — escalated to steering committee.</div>
+        </div>
+        <div class="note-item yellow">
+          <div class="note-date">Jul 22, 2026 &nbsp;·&nbsp; Hangar 7 Expansion</div>
+          <div class="note-text">Permit inspection passed conditional — fire suppression rework required before CO. Adds est. 3 weeks. Budget impact under review.</div>
+        </div>
+        <div class="note-item green">
+          <div class="note-date">Jul 20, 2026 &nbsp;·&nbsp; Apron Resurfacing</div>
+          <div class="note-text">Final pour completed ahead of schedule. Cure period begins; final inspection set for Aug 2. On track for August delivery.</div>
+        </div>
+        <div class="note-item yellow">
+          <div class="note-date">Jul 17, 2026 &nbsp;·&nbsp; Cargo Facility Phase 2</div>
+          <div class="note-text">Procurement backlog on HVAC units — lead time extended to 14 weeks. Exploring alternate vendor. Schedule risk flagged.</div>
+        </div>
+        <div class="note-item green">
+          <div class="note-date">Jul 15, 2026 &nbsp;·&nbsp; Terminal A Renovation</div>
+          <div class="note-text">Gate B12–B18 interiors complete. Punch list down to 12 items. On track for substantial completion Sep 1.</div>
+        </div>
+        <div class="note-item green">
+          <div class="note-date">Jul 10, 2026 &nbsp;·&nbsp; Taxiway Delta Extension</div>
+          <div class="note-text">Lighting installation 60% complete. FAA coordination meeting scheduled for August. No issues to report.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
