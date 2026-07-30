@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procurement Analytics Dashboard — Looker Studio Style</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Google Sans', 'Roboto', sans-serif; background: #f8f9fa; font-size: 12px; color: #202124; }
+
+/* HEADER */
+.ls-header {
+  background: white; border-bottom: 1px solid #dadce0;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;
+}
+.ls-logo { display: flex; align-items: center; gap: 10px; }
+.ls-logo-icon { width: 28px; height: 28px; }
+.ls-title { font-size: 16px; color: #202124; font-weight: 500; }
+.ls-subtitle { font-size: 11px; color: #5f6368; margin-top: 1px; }
+.ls-date { font-size: 11px; color: #5f6368; background: #f1f3f4; padding: 4px 10px; border-radius: 4px; }
+.ls-tabs { display: flex; background: white; border-bottom: 1px solid #dadce0; padding: 0 20px; }
+.ls-tab { padding: 10px 16px; font-size: 12px; color: #5f6368; cursor: pointer; border-bottom: 3px solid transparent; }
+.ls-tab.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: 500; }
+
+/* FILTER BAR */
+.filter-bar {
+  background: white; border-bottom: 1px solid #dadce0;
+  padding: 8px 20px; display: flex; gap: 10px; align-items: center;
+}
+.filter-chip {
+  display: flex; align-items: center; gap: 6px;
+  border: 1px solid #dadce0; border-radius: 16px; padding: 4px 12px;
+  font-size: 11px; color: #3c4043; cursor: pointer; background: white;
+}
+.filter-chip.active { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+.filter-label { font-size: 10px; color: #5f6368; }
+
+/* CANVAS */
+.canvas { padding: 16px 20px; display: grid; gap: 12px; }
+
+/* SCORECARD ROW */
+.scorecard-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.scorecard {
+  background: white; border-radius: 8px; padding: 14px 16px;
+  border: 1px solid #dadce0; box-shadow: 0 1px 2px rgba(60,64,67,.1);
+}
+.sc-label { font-size: 10px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
+.sc-value { font-size: 24px; font-weight: 400; color: #202124; line-height: 1; }
+.sc-delta { font-size: 10px; margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+.sc-delta.up { color: #34a853; } .sc-delta.down { color: #ea4335; } .sc-delta.neutral { color: #5f6368; }
+
+/* CHARTS */
+.chart-row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+.chart-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.chart-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.card {
+  background: white; border-radius: 8px; padding: 14px 16px;
+  border: 1px solid #dadce0; box-shadow: 0 1px 2px rgba(60,64,67,.1);
+}
+.card-title { font-size: 11px; font-weight: 500; color: #3c4043; margin-bottom: 12px; }
+.card-subtitle { font-size: 10px; color: #5f6368; margin-top: -8px; margin-bottom: 10px; }
+
+/* REQS VS POS LINE CHART */
+.chart-area { position: relative; }
+
+/* BACKLOG GAUGE */
+.gauge-wrap { display: flex; flex-direction: column; align-items: center; padding: 8px 0; }
+.gauge-number { font-size: 42px; font-weight: 300; color: #ea4335; line-height: 1; }
+.gauge-unit { font-size: 12px; color: #5f6368; margin-top: 2px; }
+.gauge-label { font-size: 11px; color: #202124; margin-top: 8px; font-weight: 500; }
+.gauge-sub { font-size: 10px; color: #5f6368; margin-top: 2px; text-align: center; }
+.gauge-bar-wrap { width: 100%; background: #f1f3f4; border-radius: 4px; height: 8px; margin-top: 10px; overflow: hidden; }
+.gauge-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(to right, #34a853, #fbbc04, #ea4335); }
+.gauge-ticks { display: flex; justify-content: space-between; font-size: 9px; color: #9aa0a6; margin-top: 2px; }
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.data-table th { background: #f8f9fa; color: #5f6368; font-weight: 500; padding: 6px 8px; text-align: left; border-bottom: 1px solid #dadce0; font-size: 10px; }
+.data-table td { padding: 6px 8px; border-bottom: 1px solid #f1f3f4; color: #3c4043; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #f8f9fa; }
+.status-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 9px; font-weight: 500; }
+.badge-urgent { background: #fce8e6; color: #c5221f; }
+.badge-normal { background: #e6f4ea; color: #137333; }
+.badge-pending { background: #fef7e0; color: #b06000; }
+.bar-inline { display: inline-block; height: 8px; border-radius: 2px; background: #1a73e8; vertical-align: middle; margin-right: 4px; }
+
+/* MINI SPARKLINE */
+.sparkline-row { display: flex; align-items: flex-end; gap: 3px; height: 30px; margin: 6px 0; }
+.spark-bar { border-radius: 2px 2px 0 0; flex: 1; }
+
+/* ENTITY TABLE */
+.entity-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid #f1f3f4; }
+.entity-row:last-child { border-bottom: none; }
+.entity-name { font-size: 10px; color: #3c4043; width: 90px; flex-shrink: 0; }
+.entity-bar-wrap { flex: 1; height: 10px; background: #f1f3f4; border-radius: 3px; overflow: hidden; }
+.entity-bar-fill { height: 100%; border-radius: 3px; background: #1a73e8; }
+.entity-val { font-size: 10px; color: #5f6368; width: 28px; text-align: right; flex-shrink: 0; }
+
+/* GOOGLE COLOR DOTS */
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.dot-blue { background: #1a73e8; }
+.dot-green { background: #34a853; }
+.dot-yellow { background: #fbbc04; }
+.dot-red { background: #ea4335; }
+
+.legend { display: flex; gap: 14px; font-size: 10px; color: #5f6368; margin-top: 6px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="ls-header">
+  <div class="ls-logo">
+    <svg class="ls-logo-icon" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13" fill="#1a73e8"/>
+      <path d="M8 14 L13 19 L20 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div>
+      <div class="ls-title">Procurement Analytics Dashboard</div>
+      <div class="ls-subtitle">Looker Studio &nbsp;·&nbsp; General Procurement — Americas</div>
+    </div>
+  </div>
+  <div class="ls-date">📅 Jan 1 – Jul 27, 2026 &nbsp;·&nbsp; YTD</div>
+</div>
+
+<div class="ls-tabs">
+  <div class="ls-tab active">📈 Overview</div>
+  <div class="ls-tab">🗂 Backlog Detail</div>
+  <div class="ls-tab">👤 By Requester</div>
+  <div class="ls-tab">🏢 By Entity</div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filters:</span>
+  <div class="filter-chip active">All Buyers</div>
+  <div class="filter-chip">All Entities</div>
+  <div class="filter-chip">Status: All</div>
+  <div class="filter-chip">Category: All</div>
+</div>
+
+<div class="canvas">
+
+  <!-- SCORECARDS -->
+  <div class="scorecard-row">
+    <div class="scorecard">
+      <div class="sc-label">Reqs Received (YTD)</div>
+      <div class="sc-value">1,284</div>
+      <div class="sc-delta up">▲ 12% vs prior year</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-label">POs Produced (YTD)</div>
+      <div class="sc-value">1,091</div>
+      <div class="sc-delta down">▼ 193 behind reqs</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-label">Current Backlog</div>
+      <div class="sc-value" style="color:#ea4335">193</div>
+      <div class="sc-delta down">▲ 18 vs last month</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-label">Avg Cycle Time (days)</div>
+      <div class="sc-value">4.2</div>
+      <div class="sc-delta up">▼ 0.8 days improvement</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-label">Pending Requester Action</div>
+      <div class="sc-value" style="color:#fbbc04">47</div>
+      <div class="sc-delta neutral">Awaiting info / approval</div>
+    </div>
+  </div>
+
+  <!-- ROW 2: REQS vs POs + BACKLOG GAUGE -->
+  <div class="chart-row">
+
+    <!-- REQS vs POs Chart -->
+    <div class="card">
+      <div class="card-title">Reqs Received vs POs Produced — Monthly (2026 YTD)</div>
+      <svg width="100%" height="180" viewBox="0 0 560 180">
+        <!-- Grid -->
+        <line x1="40" y1="10" x2="40" y2="145" stroke="#dadce0" stroke-width="1"/>
+        <line x1="40" y1="145" x2="550" y2="145" stroke="#dadce0" stroke-width="1"/>
+        <line x1="40" y1="35"  x2="550" y2="35"  stroke="#f1f3f4" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="40" y1="60"  x2="550" y2="60"  stroke="#f1f3f4" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="40" y1="85"  x2="550" y2="85"  stroke="#f1f3f4" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="40" y1="110" x2="550" y2="110" stroke="#f1f3f4" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Y labels -->
+        <text x="35" y="148" fill="#9aa0a6" font-size="8" text-anchor="end">0</text>
+        <text x="35" y="113" fill="#9aa0a6" font-size="8" text-anchor="end">50</text>
+        <text x="35" y="88"  fill="#9aa0a6" font-size="8" text-anchor="end">100</text>
+        <text x="35" y="63"  fill="#9aa0a6" font-size="8" text-anchor="end">150</text>
+        <text x="35" y="38"  fill="#9aa0a6" font-size="8" text-anchor="end">200</text>
+        <!-- X labels -->
+        <text x="90"  y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">Jan</text>
+        <text x="170" y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">Feb</text>
+        <text x="250" y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">Mar</text>
+        <text x="330" y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">Apr</text>
+        <text x="410" y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">May</text>
+        <text x="490" y="158" fill="#9aa0a6" font-size="8" text-anchor="middle">Jun</text>
+        <!-- REQS bars (blue) -->
+        <rect x="64"  y="60"  width="26" height="85" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <rect x="144" y="68"  width="26" height="77" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <rect x="224" y="46"  width="26" height="99" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <rect x="304" y="53"  width="26" height="92" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <rect x="384" y="42"  width="26" height="103" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <rect x="464" y="57"  width="26" height="88" fill="#1a73e8" rx="2" opacity="0.8"/>
+        <!-- POs bars (green) -->
+        <rect x="90"  y="71"  width="26" height="74" fill="#34a853" rx="2" opacity="0.8"/>
+        <rect x="170" y="75"  width="26" height="70" fill="#34a853" rx="2" opacity="0.8"/>
+        <rect x="250" y="57"  width="26" height="88" fill="#34a853" rx="2" opacity="0.8"/>
+        <rect x="330" y="64"  width="26" height="81" fill="#34a853" rx="2" opacity="0.8"/>
+        <rect x="410" y="60"  width="26" height="85" fill="#34a853" rx="2" opacity="0.8"/>
+        <rect x="490" y="69"  width="26" height="76" fill="#34a853" rx="2" opacity="0.8"/>
+        <!-- Values -->
+        <text x="77"  y="57"  fill="#1a73e8" font-size="8" text-anchor="middle">178</text>
+        <text x="157" y="65"  fill="#1a73e8" font-size="8" text-anchor="middle">164</text>
+        <text x="237" y="43"  fill="#1a73e8" font-size="8" text-anchor="middle">201</text>
+        <text x="317" y="50"  fill="#1a73e8" font-size="8" text-anchor="middle">191</text>
+        <text x="397" y="39"  fill="#1a73e8" font-size="8" text-anchor="middle">208</text>
+        <text x="477" y="54"  fill="#1a73e8" font-size="8" text-anchor="middle">185</text>
+        <text x="103" y="68"  fill="#34a853" font-size="8" text-anchor="middle">153</text>
+        <text x="183" y="72"  fill="#34a853" font-size="8" text-anchor="middle">147</text>
+        <text x="263" y="54"  fill="#34a853" font-size="8" text-anchor="middle">181</text>
+        <text x="343" y="61"  fill="#34a853" font-size="8" text-anchor="middle">172</text>
+        <text x="423" y="57"  fill="#34a853" font-size="8" text-anchor="middle">178</text>
+        <text x="503" y="66"  fill="#34a853" font-size="8" text-anchor="middle">160</text>
+      </svg>
+      <div class="legend">
+        <div class="legend-item"><div class="dot dot-blue"></div>Reqs Received</div>
+        <div class="legend-item"><div class="dot dot-green"></div>POs Produced</div>
+      </div>
+    </div>
+
+    <!-- BACKLOG ANALYZER -->
+    <div class="card">
+      <div class="card-title">Backlog Analyzer</div>
+      <div class="card-subtitle">Estimated workdays to clear current backlog</div>
+      <div class="gauge-wrap">
+        <div class="gauge-number">11.6</div>
+        <div class="gauge-unit">work days to clear</div>
+        <div class="gauge-label">Based on prior year throughput</div>
+        <div class="gauge-sub">193 open POs &nbsp;·&nbsp; Avg 16.6 POs/day (2025 baseline)</div>
+        <div class="gauge-bar-wrap" style="margin-top:14px">
+          <div class="gauge-bar-fill" style="width:70%"></div>
+        </div>
+        <div class="gauge-ticks"><span>0d</span><span>5d</span><span>10d</span><span>15d</span><span>20d</span></div>
+      </div>
+      <div style="margin-top:14px; border-top:1px solid #f1f3f4; padding-top:10px;">
+        <div style="font-size:10px;color:#5f6368;margin-bottom:6px;font-weight:500">2025 Throughput Reference</div>
+        <div class="sparkline-row">
+          <div class="spark-bar" style="height:18px;background:#1a73e8;opacity:0.5"></div>
+          <div class="spark-bar" style="height:22px;background:#1a73e8;opacity:0.6"></div>
+          <div class="spark-bar" style="height:16px;background:#1a73e8;opacity:0.5"></div>
+          <div class="spark-bar" style="height:28px;background:#1a73e8;opacity:0.7"></div>
+          <div class="spark-bar" style="height:20px;background:#1a73e8;opacity:0.6"></div>
+          <div class="spark-bar" style="height:26px;background:#1a73e8;opacity:0.7"></div>
+          <div class="spark-bar" style="height:30px;background:#1a73e8;opacity:0.8"></div>
+          <div class="spark-bar" style="height:24px;background:#1a73e8;opacity:0.7"></div>
+          <div class="spark-bar" style="height:19px;background:#1a73e8;opacity:0.6"></div>
+          <div class="spark-bar" style="height:27px;background:#1a73e8;opacity:0.7"></div>
+          <div class="spark-bar" style="height:22px;background:#1a73e8;opacity:0.6"></div>
+          <div class="spark-bar" style="height:25px;background:#1a73e8;opacity:0.7"></div>
+        </div>
+        <div style="font-size:9px;color:#9aa0a6;display:flex;justify-content:space-between;margin-top:2px"><span>Jan '25</span><span>Dec '25</span></div>
+        <div style="font-size:10px;color:#5f6368;margin-top:6px">Avg daily throughput: <strong style="color:#202124">16.6 POs/day</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3: BACKLOG DETAIL BY BUYER + PENDING REQUESTER ACTION -->
+  <div class="chart-row-2">
+
+    <!-- BACKLOG BY BUYER -->
+    <div class="card">
+      <div class="card-title">Backlog Detail — By Buyer</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Buyer</th>
+            <th>Open POs</th>
+            <th>Oldest (days)</th>
+            <th>Urgent</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Marcus Thibodeau</strong></td>
+            <td><span class="bar-inline" style="width:52px"></span>52</td>
+            <td>34</td><td>8</td>
+            <td><span class="status-badge badge-urgent">High Load</span></td>
+          </tr>
+          <tr>
+            <td><strong>Priya Venkataraman</strong></td>
+            <td><span class="bar-inline" style="width:38px"></span>38</td>
+            <td>21</td><td>3</td>
+            <td><span class="status-badge badge-normal">Normal</span></td>
+          </tr>
+          <tr>
+            <td><strong>Devon Alcott</strong></td>
+            <td><span class="bar-inline" style="width:44px"></span>44</td>
+            <td>29</td><td>6</td>
+            <td><span class="status-badge badge-pending">At Risk</span></td>
+          </tr>
+          <tr>
+            <td><strong>Simone Okafor</strong></td>
+            <td><span class="bar-inline" style="width:28px"></span>28</td>
+            <td>12</td><td>1</td>
+            <td><span class="status-badge badge-normal">Normal</span></td>
+          </tr>
+          <tr>
+            <td><strong>Tyler Beaumont</strong></td>
+            <td><span class="bar-inline" style="width:31px"></span>31</td>
+            <td>17</td><td>2</td>
+            <td><span class="status-badge badge-normal">Normal</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PENDING REQUESTER ACTION -->
+    <div class="card">
+      <div class="card-title">Pending Requester Action — 47 Open Items</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Requester</th>
+            <th>Dept</th>
+            <th>Open Items</th>
+            <th>Oldest (days)</th>
+            <th>Action Needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>J. Hartwell</strong></td>
+            <td>Engineering</td>
+            <td>11</td><td>22</td>
+            <td><span class="status-badge badge-urgent">Spec clarification</span></td>
+          </tr>
+          <tr>
+            <td><strong>A. Nakamura</strong></td>
+            <td>Maintenance</td>
+            <td>9</td><td>18</td>
+            <td><span class="status-badge badge-pending">Budget approval</span></td>
+          </tr>
+          <tr>
+            <td><strong>C. Delacroix</strong></td>
+            <td>Operations</td>
+            <td>8</td><td>11</td>
+            <td><span class="status-badge badge-pending">Vendor approval</span></td>
+          </tr>
+          <tr>
+            <td><strong>R. Sánchez</strong></td>
+            <td>Facilities</td>
+            <td>7</td><td>9</td>
+            <td><span class="status-badge badge-normal">Pending sign-off</span></td>
+          </tr>
+          <tr>
+            <td><strong>M. Adeyemi</strong></td>
+            <td>IT</td>
+            <td>6</td><td>14</td>
+            <td><span class="status-badge badge-urgent">Spec clarification</span></td>
+          </tr>
+          <tr>
+            <td><strong>L. Christensen</strong></td>
+            <td>Supply Chain</td>
+            <td>6</td><td>7</td>
+            <td><span class="status-badge badge-normal">Pending sign-off</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ROW 4: BACKLOG BY ENTITY -->
+  <div class="card">
+    <div class="card-title">Backlog Detail — By Entity</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:4px 0">
+      <div>
+        <div class="entity-row">
+          <div class="entity-name">Airbus Americas</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:100%"></div></div>
+          <div class="entity-val">72</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">MRO Services LLC</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:60%"></div></div>
+          <div class="entity-val">43</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">Gulf Coast Ops</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:42%"></div></div>
+          <div class="entity-val">30</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">AELN Partners</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:33%"></div></div>
+          <div class="entity-val">24</div>
+        </div>
+      </div>
+      <div>
+        <div class="entity-row">
+          <div class="entity-name">Meridian Supply</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:25%;background:#34a853"></div></div>
+          <div class="entity-val">18</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">Delta Tech Group</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:17%;background:#34a853"></div></div>
+          <div class="entity-val">12</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">Coastal Logistics</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:11%;background:#fbbc04"></div></div>
+          <div class="entity-val">8</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-name">Other</div>
+          <div class="entity-bar-wrap"><div class="entity-bar-fill" style="width:10%;background:#9aa0a6"></div></div>
+          <div class="entity-val">7</div>
+        </div>
+      </div>
+    </div>
+    <div class="legend" style="margin-top:10px;border-top:1px solid #f1f3f4;padding-top:8px">
+      <div class="legend-item"><div class="dot dot-blue"></div>High backlog (&gt;30)</div>
+      <div class="legend-item"><div class="dot dot-green"></div>Moderate (10–30)</div>
+      <div class="legend-item"><div class="dot dot-yellow"></div>Low (&lt;10)</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
