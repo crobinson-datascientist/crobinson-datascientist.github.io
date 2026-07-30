@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procurement Backlog Analyzer — Courtny Robinson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Courtny Robinson</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section style="padding-top:2.5rem">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+
+    <div class="detail-banner thumb-proc">
+      <svg viewBox="0 0 500 180" width="100%" height="180" preserveAspectRatio="xMidYMid meet">
+        <line x1="50" y1="150" x2="460" y2="150" stroke="rgba(255,255,255,.2)"/>
+        <line x1="50" y1="25" x2="50" y2="150" stroke="rgba(255,255,255,.2)"/>
+        <rect x="80" y="82" width="26" height="68" fill="#1a73e8" rx="3"/>
+        <rect x="108" y="100" width="26" height="50" fill="#34a853" rx="3"/>
+        <rect x="170" y="70" width="26" height="80" fill="#1a73e8" rx="3"/>
+        <rect x="198" y="92" width="26" height="58" fill="#34a853" rx="3"/>
+        <rect x="260" y="58" width="26" height="92" fill="#1a73e8" rx="3"/>
+        <rect x="288" y="80" width="26" height="70" fill="#34a853" rx="3"/>
+        <rect x="350" y="66" width="26" height="84" fill="#1a73e8" rx="3"/>
+        <rect x="378" y="88" width="26" height="62" fill="#34a853" rx="3"/>
+      </svg>
+    </div>
+
+    <span class="tag">Procurement Analytics</span>
+    <h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Procurement Backlog Analyzer</h1>
+    <div class="chips" style="margin:1rem 0 1.5rem">
+      <span class="chip">Looker Studio</span><span class="chip">SQL</span>
+      <span class="chip">Google Sheets</span><span class="chip">Throughput Modeling</span>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:2.5rem">
+      <a href="../dashboards/procurement-dashboard.html" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View Live Dashboard ↗</a>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Problem</p>
+      <p>
+        The procurement team knew the backlog was growing but had no way to quantify it or explain it.
+        Requisitions came in faster than purchase orders went out, and the gap widened month over
+        month. "How bad is it?" had no answer beyond a raw count of open items, which meant nothing to
+        anyone outside the team.
+      </p>
+      <p>
+        The more consequential gap was diagnostic. No one could distinguish backlog caused by buyer
+        capacity from backlog stalled on the <em>requester</em> side — waiting on specs, budget
+        approval, or vendor sign-off. Every escalation landed on procurement regardless of where the
+        item was actually stuck. That made staffing conversations unproductive: leadership couldn't
+        tell whether the team was under-resourced or whether half the queue was blocked on inputs the
+        team didn't control.
+      </p>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Process</p>
+      <p>
+        I built a Looker Studio dashboard on consolidated requisition and PO data, structured around
+        one headline metric and three diagnostic breakdowns.
+      </p>
+      <p>
+        <strong>Intake versus output.</strong> Reqs received charted against POs produced by month.
+        This is the simplest view on the dashboard and the one that reframed the conversation — the
+        gap between the two bar series <em>is</em> the backlog, accumulating visibly.
+      </p>
+      <p>
+        <strong>The backlog analyzer.</strong> Rather than reporting a count, this calculates estimated
+        work days to clear the queue: open POs divided by average daily throughput derived from the
+        prior year's completed orders. The reasoning is that a count is an abstraction while a
+        capacity figure is actionable — "eleven work days of committed work" tells leadership something
+        a number like "193 open items" does not. Using a full prior year as the throughput baseline
+        smooths seasonal variation rather than over-fitting to a recent good or bad month.
+      </p>
+      <p>
+        <strong>Three segmented views.</strong> By buyer, showing workload distribution and aging so
+        imbalances are visible. By pending requester action, naming the requester, department, and the
+        specific blocker. By entity, showing organizational concentration of open items.
+      </p>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Result</p>
+      <p>
+        The days-to-clear metric gave leadership a concrete capacity number instead of an abstract
+        count, which changed the character of staffing and prioritization discussions — they became
+        conversations about a known quantity of committed work rather than arguments about whether the
+        backlog was "bad."
+      </p>
+      <p>
+        Separating requester-blocked items from buyer-queued items redistributed accountability
+        accurately. Requesters could see exactly what was waiting on them, and procurement stopped
+        absorbing escalations for delays it didn't cause. Buyer-level aging data made workload
+        imbalances visible and actionable rather than anecdotal.
+      </p>
+    </div>
+
+    <div class="callout callout-warn">
+      <strong>A note on this demo.</strong> The linked dashboard is a recreation built for portfolio
+      purposes. All buyer names, requester names, entities, and figures are fictional. No proprietary
+      or employer-confidential data is represented. The metric definitions, segmentation logic, and
+      throughput calculation reflect the original work.
+    </div>
+
+    <div class="btn-row" style="margin-top:2rem">
+      <a href="../dashboards/procurement-dashboard.html" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View Live Dashboard ↗</a>
+      <a href="../index.html#projects" class="btn btn-ghost">← All Projects</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  © 2026 Courtny Robinson · <a href="mailto:robinson.courtnyk@gmail.com">robinson.courtnyk@gmail.com</a>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>

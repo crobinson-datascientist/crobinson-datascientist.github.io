@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Procurement Risk Framework — Courtny Robinson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Courtny Robinson</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section style="padding-top:2.5rem">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+
+    <div class="detail-banner thumb-research">
+      <svg viewBox="0 0 500 180" width="100%" height="180" preserveAspectRatio="xMidYMid meet">
+        <rect x="90" y="45" width="90" height="36" rx="6" fill="none" stroke="#5DCAA5" stroke-width="2.5"/>
+        <rect x="90" y="100" width="90" height="36" rx="6" fill="none" stroke="#5DCAA5" stroke-width="2.5"/>
+        <rect x="310" y="72" width="90" height="36" rx="6" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+        <line x1="180" y1="63" x2="310" y2="83" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+        <line x1="180" y1="118" x2="310" y2="98" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <span class="tag tag-progress">Planned</span>
+    <h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">AI Procurement Risk Framework for Public Agencies</h1>
+    <div class="chips" style="margin:1rem 0 1.5rem">
+      <span class="chip">Python</span><span class="chip">Weighted Decision Modeling</span>
+      <span class="chip">GSA Data</span><span class="chip">Policy Analysis</span>
+    </div>
+
+    <div class="callout">
+      <strong>Status:</strong> Planned. Scoping and source identification underway; no analysis
+      conducted yet. This page describes the intended design.
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Problem</p>
+      <p>
+        Government agencies are procuring AI tools at increasing scale without standardized risk
+        assessment. Existing procurement frameworks were written for software and services with
+        predictable behavior — they don't account for model drift, training data provenance, automated
+        decisions affecting individuals, or the vendor lock-in that comes from proprietary model
+        weights.
+      </p>
+      <p>
+        The practical consequence is that contracting officers evaluating an AI procurement often have
+        no structured basis for distinguishing a low-risk document-summarization tool from a system
+        making eligibility determinations about citizens.
+      </p>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Intended approach</p>
+      <p>
+        Build a weighted scoring rubric applied to real government AI contracts drawn from public
+        sources — GSA schedules and published agency AI use case inventories among them. The scoring
+        dimensions would cover decision autonomy, population affected, reversibility of harm, data
+        sensitivity, vendor transparency, and exit cost.
+      </p>
+      <p>
+        Output would be a tiered risk classification with a corresponding procurement checklist —
+        specific questions and contract clauses appropriate to each tier, rather than a single
+        one-size assessment.
+      </p>
+      <p>
+        This connects directly to my procurement background: the useful version of this framework isn't
+        an academic taxonomy, it's something a contracting officer can actually work through before a
+        solicitation goes out.
+      </p>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Open questions</p>
+      <p>
+        The main methodological challenge is validation. A scoring rubric is a set of assumptions
+        expressed as weights, and without an outcome variable to check against, there's no obvious way
+        to demonstrate the weights are right rather than merely plausible. Options I'm considering
+        include expert elicitation for weight-setting, sensitivity analysis across weighting schemes to
+        identify which conclusions are robust, and back-testing against documented AI procurement
+        failures.
+      </p>
+      <p>
+        I'd rather state that problem plainly now than present a rubric later as though the weights
+        were derived rather than chosen.
+      </p>
+    </div>
+
+    <div class="btn-row" style="margin-top:2rem">
+      <a href="../index.html#projects" class="btn btn-ghost">← All Projects</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  © 2026 Courtny Robinson · <a href="mailto:robinson.courtnyk@gmail.com">robinson.courtnyk@gmail.com</a>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>
