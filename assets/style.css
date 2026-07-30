@@ -85,16 +85,17 @@ h3 {
   font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--teal); margin-bottom: 0.8rem;
 }
-.lede { font-size: 1.05rem; color: var(--muted); line-height: 1.7; max-width: 560px; }
+.lede { font-size: 1.05rem; color: var(--muted); line-height: 1.7; max-width: 620px; }
 
 /* ---------- Hero ---------- */
 #hero {
   padding-top: 5.5rem; padding-bottom: 4rem;
-  display: grid; grid-template-columns: 1fr auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) 140px;
   align-items: start; gap: 3rem;
 }
 .avatar {
-  width: 140px; height: 140px; border-radius: 50%;
+  width: 140px; height: 140px; min-width: 140px; max-width: 140px;
+  border-radius: 50%;
   background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
   display: flex; align-items: center; justify-content: center;
   font-family: 'DM Serif Display', Georgia, serif;
@@ -284,6 +285,7 @@ footer a:hover { text-decoration: underline; }
   .nav-inner { padding: 0 1.25rem; }
   section { padding: 3.25rem 0; }
   #hero { grid-template-columns: 1fr; padding-top: 3rem; }
+  .avatar { min-width: 88px; max-width: 88px; }
   .avatar { width: 88px; height: 88px; font-size: 1.9rem; }
   .grid-2 { grid-template-columns: 1fr; }
   .nav-links {
