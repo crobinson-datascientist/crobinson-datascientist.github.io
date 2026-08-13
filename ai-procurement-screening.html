@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Procurement Risk Screening — Courtny Robinson</title>
+<meta name="description" content="A graduate policy analysis of Alabama's AI procurement gap, implemented as a working two-tier screening prototype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .arch {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.25rem 1.5rem; margin: 1.75rem 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .74rem; line-height: 1.65; color: var(--text-soft);
+    white-space: pre; overflow-x: auto;
+  }
+  .part-label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted);
+    margin: 2.75rem 0 1rem; padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .kd { margin-bottom: 1.1rem; }
+  .kd strong { display: block; color: var(--navy); font-size: .92rem; margin-bottom: .25rem; }
+  .kd span { font-size: .9rem; line-height: 1.75; color: var(--text-soft); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Courtny Robinson</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects" class="active">Projects</a></li>
+      <li><a href="../writing/index.html">Writing</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+  <section style="padding-top:2.5rem">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+
+    <div class="detail-banner thumb-research">
+      <svg viewBox="0 0 500 180" width="100%" height="180" preserveAspectRatio="xMidYMid meet">
+        <rect x="60" y="72" width="82" height="36" rx="6" fill="none" stroke="#5DCAA5" stroke-width="2.5"/>
+        <rect x="190" y="42" width="82" height="36" rx="6" fill="none" stroke="#E15759" stroke-width="2.5"/>
+        <rect x="190" y="102" width="82" height="36" rx="6" fill="none" stroke="#5DCAA5" stroke-width="2.5"/>
+        <rect x="320" y="72" width="82" height="36" rx="6" fill="none" stroke="#1D9E75" stroke-width="3"/>
+        <line x1="142" y1="84" x2="190" y2="62" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+        <line x1="142" y1="96" x2="190" y2="118" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+        <line x1="272" y1="60" x2="320" y2="84" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+        <line x1="272" y1="120" x2="320" y2="96" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <span class="tag">AI Governance</span>
+    <h1 style="font-size:clamp(1.8rem,4.5vw,2.5rem);max-width:760px">AI Procurement Risk Screening: From Policy Analysis to Working Prototype</h1>
+    <p class="lede" style="max-width:660px;margin-top:.75rem">
+      A two-part project: a graduate policy analysis of a real gap in Alabama state government,
+      followed by a working software prototype that implements it.
+    </p>
+    <div class="chips" style="margin:1.25rem 0 1.5rem">
+      <span class="chip">Python</span><span class="chip">Streamlit</span>
+      <span class="chip">scikit-learn</span><span class="chip">Policy Analysis</span>
+      <span class="chip">Bardach Framework</span>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:2.5rem">
+      <a href="https://ai-procurement-screening-tool.streamlit.app/" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Live Demo ↗</a>
+      <a href="https://github.com/crobinson-datascientist/ai-procurement-screening-tool" class="btn btn-outline" target="_blank" rel="noopener noreferrer">GitHub Repo ↗</a>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">The Problem</p>
+      <p>
+        Alabama state government has no formal, pre-purchase review process for AI and machine
+        learning technology. Agencies can — and do — buy AI-enabled software without any structured
+        check on how it will be used, what data it touches, or what happens when it fails.
+      </p>
+      <p>
+        Compounding this: vendors increasingly embed AI features into products agencies already own,
+        often without calling attention to it. An agency may not even realize it's procuring an AI
+        system, because the capability was added quietly to something familiar.
+      </p>
+    </div>
+
+    <p class="part-label">Part 1 — The Policy Analysis</p>
+
+    <div class="pps-block">
+      <p>
+        Using Eugene Bardach's eight-step policy analysis framework, I built a statewide, two-phase
+        proposal.
+      </p>
+      <p>
+        <strong>Phase 1 — Executive branch pilot.</strong> A rule-based hard gate for high-stakes AI
+        use cases — benefits eligibility, criminal justice, child welfare, biometric or health data —
+        routing them to mandatory full human review, no exceptions. Everything else moves through a
+        lightweight, ML-assisted triage process that scores risk to help a small review team
+        prioritize their queue, never to approve or deny anything automatically.
+      </p>
+      <p>
+        <strong>Phase 2 — Legislative extension.</strong> Scaling the same disclosure-first,
+        human-in-the-loop framework to the rest of state government.
+      </p>
+      <p>
+        One design decision threads through the whole proposal: <strong>a mandatory disclosure check
+        on every purchase request, not an opt-in one.</strong> Because vendors can embed AI into
+        products without an agency's knowledge, a screening system that only activates when someone
+        already recognizes "this is AI" can be silently bypassed by ignorance, not just malice. The
+        two-question disclosure gate applies to every request regardless of whether the requester
+        thinks AI is involved.
+      </p>
+      <p>
+        The proposal grounds its $200K pilot budget in a real cost-avoidance case: Michigan's MiDAS
+        unemployment fraud detection system, which wrongly flagged tens of thousands of residents
+        with no human review, and which the state ultimately settled for $20 million. That case makes
+        the argument for human-in-the-loop review economically, not just ethically.
+      </p>
+    </div>
+
+    <div class="callout">
+      <strong>Deliverables produced:</strong> an executive verbal briefing (slide deck and full
+      speaker script) making the case to state leadership including ROI justification; a
+      cross-functional colleague briefing deck with a practical "how to tell if a purchase includes
+      AI" guide for non-technical staff; and a critical reflection covering trade-offs, equity
+      concerns, and institutional capacity constraints.
+    </div>
+
+    <p class="part-label">Part 2 — The Working Prototype</p>
+
+    <div class="pps-block">
+      <p>
+        To make the design's core trade-off — <em>machine learning should triage, not decide</em> —
+        something a reviewer could click through rather than only read about, I built it as a real
+        Streamlit application.
+      </p>
+    </div>
+
+    <div class="arch"> Every purchase request
+          │
+          ▼
+ Disclosure Gate (rule-based, mandatory on every request)
+          │  AI disclosed / not sure
+          ▼
+ Tier 0 Hard Gate (rule-based, NO model) ──► benefits eligibility / criminal justice /
+          │  not a Tier 0 category            child welfare / biometric / health data
+          ▼                                   → ALWAYS full human review
+ Tier 1 ML Triage (RandomForest, advisory) → Low / Medium / High, orders the queue
+          │
+          ▼
+ Human Reviewer (dashboard) → Approve / Escalate / Request More Info</div>
+
+    <div class="pps-block">
+      <p class="pps-label">Key design decisions</p>
+
+      <div class="kd">
+        <strong>The Tier 0 gate is pure rule logic — no model is ever called.</strong>
+        <span>This isn't a threshold on a score; it's a hard-coded exclusion, so the riskiest
+        requests can never be quietly triaged by an algorithm.</span>
+      </div>
+
+      <div class="kd">
+        <strong>The ML model is advisory only.</strong>
+        <span>Its Low/Medium/High output orders a review queue. It never appears as "approved" or
+        "denied," and nothing in the app can auto-approve a request — every path ends with a human
+        clicking a button.</span>
+      </div>
+
+      <div class="kd">
+        <strong>Disclosure-first intake.</strong>
+        <span>Every submitted request answers a mandatory AI-disclosure question before anything else
+        happens, closing the "vendor embedded AI without telling us" gap identified in the policy
+        analysis.</span>
+      </div>
+
+      <div class="kd">
+        <strong>Train/serving population matching.</strong>
+        <span>Because Tier 0 requests never reach the model in production, they're excluded from its
+        training data too — the model only ever sees the population it will actually be asked to
+        score.</span>
+      </div>
+
+      <div class="kd">
+        <strong>Honest, lightweight explainability.</strong>
+        <span>Each score comes with a plain-language list of the factors that pushed it up ("vendor
+        did not disclose testing results," "no human-in-the-loop planned"), built from feature
+        importances rather than SHAP or LIME — a deliberate simplicity trade-off for a demo,
+        documented as such rather than overstated.</span>
+      </div>
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">What's in the app</p>
+      <p>
+        <strong>Home</strong> — overview, live queue metrics, navigation.
+        <strong>Submit a Request</strong> — disclosure gate, full intake questionnaire, instant risk
+        score with explanation. <strong>Reviewer Dashboard</strong> — filterable queue, per-request
+        detail with a probability breakdown chart, and reviewer actions. <strong>About This
+        Tool</strong> — model card, methodology, and the limitations section below.
+      </p>
+      <p>
+        Built with Python, Streamlit, scikit-learn (RandomForestClassifier), pandas, plotly, and
+        joblib. No external database — flat-file JSON persistence, by design, to keep the demo
+        dependency-free.
+      </p>
+    </div>
+
+    <div class="callout callout-warn">
+      <strong>Known limitations, stated plainly.</strong> This is a portfolio demonstration, not
+      production software. All requests, vendors, and incident histories are synthetic; real Alabama
+      agency names are used for realism only, and the project has no affiliation with the State of
+      Alabama. The model is trained on roughly 600 synthetically generated rows using a
+      hand-specified risk formula, not real procurement outcomes, and hasn't been tested for fairness
+      or bias. These limitations are documented in-app on the About page rather than only in the
+      README, so they travel with the tool.
+    </div>
+
+    <div class="pps-block">
+      <p class="pps-label">Origin</p>
+      <p>
+        This began as an assignment for my graduate program, applying Bardach's framework to a real
+        gap in Alabama's technology procurement process. The prototype is the "what if we actually
+        built it" follow-up — turning the two-tier governance design into working code so its central
+        trade-offs (thin training data, vendor self-report reliability, the detection gap for
+        embedded AI) are things a visitor can click through, not just read about.
+      </p>
+    </div>
+
+    <div class="btn-row" style="margin-top:2.5rem">
+      <a href="https://ai-procurement-screening-tool.streamlit.app/" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Live Demo ↗</a>
+      <a href="https://github.com/crobinson-datascientist/ai-procurement-screening-tool" class="btn btn-outline" target="_blank" rel="noopener noreferrer">GitHub Repo ↗</a>
+      <a href="../index.html#projects" class="btn btn-ghost">← All Projects</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  © 2026 Courtny Robinson · <a href="mailto:robinson.courtnyk@gmail.com">robinson.courtnyk@gmail.com</a>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>
